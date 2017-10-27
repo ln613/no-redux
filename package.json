@@ -1,0 +1,25 @@
+{
+  "name": "noredux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist",
+  "scripts": {
+    "start": "watch \"npm run build\" src",
+    "build": "babel src --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nan Li",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "@cycle/http": "^14.7.0",
+    "ramda": "^0.25.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-cycles": "^0.4.1"
+  }
+}
