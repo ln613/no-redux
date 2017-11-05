@@ -1,7 +1,7 @@
 {
   "name": "no-redux",
   "version": "0.1.0",
-  "description": "",
+  "description": "A react/redux library which automates all redux flows.",
   "main": "dist",
   "scripts": {
     "start": "watch \"npm run build\" src",
