@@ -1,4 +1,4 @@
-import { init, last, range } from 'ramda';
+import { init, last, range, fromPairs } from 'ramda';
 
 export default (...fns) => {
   if (fns.length === 0) return;
@@ -19,3 +19,6 @@ export default (...fns) => {
     return cache;
   }
 }
+
+export const mapStateWithSelectors = m =>
+  s => fromPairs(Object.keys(m).map(x => [x, m[x](s)]));

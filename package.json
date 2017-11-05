@@ -1,18 +1,20 @@
 {
-  "name": "noredux",
-  "version": "1.0.0",
+  "name": "no-redux",
+  "version": "0.1.0",
   "description": "",
   "main": "dist",
   "scripts": {
     "start": "watch \"npm run build\" src",
     "build": "babel src --out-dir dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Nan Li",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
     "babel-preset-env": "^1.6.1",
+    "jest": "^21.2.1",
     "watch": "^1.0.2"
   },
   "dependencies": {

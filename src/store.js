@@ -1,4 +1,4 @@
-import { is, isEmpty, fromPairs } from 'ramda';
+import { is, isEmpty, fromPairs, append } from 'ramda';
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { run } from '@cycle/run';
 import { createCycleMiddleware } from 'redux-cycles';
@@ -7,29 +7,38 @@ import { combineCycles } from 'redux-cycles';
 import generateReducer from './reducer';
 import generateCycles from './cycles';
 
-export default (actionData, initialState = {}) => {
+export default (actionData, initialState = {}, extraReducers = {}, extraMiddlewares = []) => {
   const cycleMiddleware = createCycleMiddleware();
 
-  const middewares = [
-    cycleMiddleware,
-  ];
+  const middewares = append(cycleMiddleware, extraMiddlewares);
 
-  const reducers = isDataArray(actionData)
-    ? combineReducers(fromPairs(
-      Object.keys(actionData).map(r =>
-        [r, generateReducer(actionData[r])]
-      )
-    ))
-    : generateReducer(actionData);
+  const isArr = isDataArray(actionData);
+
+  const exReducerKeys = Object.keys(extraReducers);
+
+  if (exReducerKeys.length > 0 && !isArr)
+    throw new Error('A name must be provided for the default reducer.');
+  
+  const reducers = !isArr
+    ? generateReducer(actionData)
+    : combineReducers(Object.assign({},
+        fromPairs(
+          Object.keys(actionData).map(r =>
+            [r, generateReducer(actionData[r])]
+          )
+        ),
+        extraReducers  
+      ));
   
   const store = createStore(reducers, initialState, compose(
     applyMiddleware(...middewares),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
+    process && process.env && process.env.NODE_ENV === 'development' && window.devToolsExtension
+      ? window.devToolsExtension()
+      : f => f
   ));
 
   run(combineCycles(...generateCycles(actionData)), {
     ACTION: cycleMiddleware.makeActionDriver(),
-    //STATE: cycleMiddleware.makeStateDriver(),
     HTTP: makeHTTPDriver(),
   });
 
@@ -40,6 +49,6 @@ const isDataArray = d =>
   is(Object, d) &&
   Object.keys(d).every(x =>
     is(Object, d[x]) &&
-    isEmpty(d[x]) &&
+    !isEmpty(d[x]) &&
     Object.keys(d[x]).every(y => is(Object, d[x][y]))
   );

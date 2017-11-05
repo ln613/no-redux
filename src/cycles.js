@@ -1,9 +1,10 @@
-import { unnest } from 'ramda';
-import { parsePath, ofType, toGet, toSet } from './common';
+import xs from 'xstream';
+import { unnest, omit, tap } from 'ramda';
+import { ofType, toGet, toSet, isPost } from './common';
 
 export default l => unnest(
   Object.keys(l).map(x => {
-    const typeGet = toGet(x);
+    const typeGet = toGet(x, l[x]);
     const typeSet = toSet(x);
     const t = l[x];
     const method = t.method ? t.method.toUpperCase() : 'GET';
@@ -11,24 +12,41 @@ export default l => unnest(
     return [
       s => ({
         HTTP: ofType(typeGet, s.ACTION)
-          .map(a => ({
-            url: a.url,
-            method,
-            send: method === 'POST' ? (t.data ? t.data(a.payload) : a.payload) : null,
-            category: typeGet,
-            param: a.payload
-          }))
+          .map(a => Object.assign(
+            {},
+            omit(['url', 'type', 'after', 'path', 'body'], t),
+            {
+              method,
+              url: a.url,
+              send: isPost(t) ? a.body : null,
+              category: typeGet,
+              path: a.path,
+              params: a.params
+            }
+          ))
       }),
       
       s => ({
         ACTION: s.HTTP
           .select(typeGet)
-          .flatten()
-          .map(r => ({
+          .map(r => r.replaceError(error => xs.of({
             type: typeSet,
-            payload: t.post ? t.post(r.body, r.request.param) : r.body,
-            path: parsePath(t.path, x)(r.request.param),
-          }))
+            error: {
+              source: typeGet,
+              text: error.response ? error.response.text : error.stack,
+              status: error.response ? error.response.status : null,
+            }
+          })))
+          .flatten()
+          .map(r => r.error ? r : {
+            type: typeSet,
+            payload: t.after
+              ? t.after(r.body, r.request.params, r.request.send)
+              : r.body,
+            path: r.request.path,
+            params: r.request.params,
+            http: true
+          })
       })
     ];
   })
