@@ -1,7 +1,7 @@
 import createStore from '../src/store';
 import generateActions from '../src/actions';
-import createSagaMiddleware, { takeEvery } from 'redux-saga';
-import { put } from 'redux-saga/effects';
+// import createSagaMiddleware, { takeEvery } from 'redux-saga';
+// import { put } from 'redux-saga/effects';
 
 const actionData = {
   artists: {
