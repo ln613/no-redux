@@ -4,7 +4,19 @@
 
 A react/redux library which automates all redux flows. No more action creators, reducers, thunks/sagas..., and immutability is guaranteed. Redux becomes invisible to you, hence the name no-redux.
 
-## The Idea
+### Table of Contents
+
+* [The idea](#the-idea)
+* [Install](#install)
+* [Usage](#usage)
+* [Define action data](#define-action-data)
+  * [Action object properties](#action-object-properties)
+  * [Store action vs http action](#store-action-vs-http-action)
+  * [Get http action vs post http action](#get-http-action-vs-post-http-action)
+  * [Generate action creators with generateActions](#generate-action-creators-with-generateActions)
+
+
+## The idea
 
 Redux is great, but there is a bit of learning curve and there are lots of boiler-plate code you have to write, not just for one-time configuration, but everytime you need a new action, you have to do the follwoing:
 
@@ -99,4 +111,31 @@ export default connect(s => ({ artists: s.artists }), actions)(App);
 
 ```
 
+## Define action data
 
+### Action object properties
+
+When you define an action object, these are the available properties:
+
+* url
+* method
+* path
+* after
+* body
+* other http properties (headers, accept, user, password, attach..., please check [cyclejs http doc](https://cycle.js.org/api/http.html) for more info)
+
+### Store action vs http action
+
+If there is an url property, then it's a http action, otherwise it's a store action.
+
+### Get http action vs post http action
+
+If the method property is 'post', it's a post http action, otherwise it's a get http action.
+
+### Generate action creators with generateActions
+
+The 'generateActions' function will generate 2 action creators for each http action, 1 action creator for each store action.
+
+* get http action: for each get http action, an action creator function with the name 'get + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'getArtist' will be created. The 'get' function will take 1 parameter - 'params' which contains values for the parameters defined in the url or path properties.
+* post http action: for each post http action, an action creator function with the name 'post + object name' will be created. For example, if you have an action object named 'saveArtist', then an action creator function named 'postSaveArtist' will be created. The 'post' function will take 2 parameters - 'body' and 'params', and 'body' will be the object that will be posted to the server.
+* any action: for any action (including http actions), an action creator function with the name 'set + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'setArtist' will be created. The 'set' function will take 2 parameters - 'payload' and 'params', and 'payload' will be the value/object that will be put on the store.
