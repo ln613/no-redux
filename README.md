@@ -14,6 +14,11 @@ A react/redux library which automates all redux flows. No more action creators, 
   * [Store action vs http action](#store-action-vs-http-action)
   * [Get http action vs post http action](#get-http-action-vs-post-http-action)
   * [Generate action creators with generateActions](#generate-action-creators-with-generateActions)
+  * [Define parameters in the url or path property](#define-parameters-in-the-url-or-path-property)
+* [Update nested store object with path](#update-nested-store-object-with-path)
+  * [Locate an array element in the path](#locate-an-array-element-in-the-path)
+  * [Add element to an array](#add-element-to-an-array)
+  * [Remove element from an array](#remove-element-from-an-array)
 
 
 ## The idea
@@ -47,7 +52,6 @@ No-redux also provides a createStore function for the initial configuration, so 
 Create a declarative action data file.
 
 ```js
-
 import { generateActions } from 'no-redux';
 
 export const actionData = {
@@ -57,7 +61,6 @@ export const actionData = {
 }
 
 export default generateActions(actionData);
-
 ```
 
 ### Step 2
@@ -65,7 +68,6 @@ export default generateActions(actionData);
 Create a redux store by calling the createStore function from 'no-redux' with the action data object you defined in step 1.
 
 ```js
-
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider, createStore } from 'no-redux';
@@ -78,7 +80,6 @@ render(
   </Provider>,
   document.getElementById('root')
 );
-
 ```
 
 ### Step 3
@@ -86,7 +87,6 @@ render(
 In your component, connect to the store with the action creators you created in step 1. When you call the action creator functions, no-redux will generate the actions, make http requests, get the http response and put the results on the redux store.
 
 ```js
-
 import React from 'react';
 import { connect } from 'no-redux';
 import actions from '../actions';
@@ -108,7 +108,6 @@ class App extends React.Component {
 }
 
 export default connect(s => ({ artists: s.artists }), actions)(App);
-
 ```
 
 ## Define action data
@@ -139,5 +138,92 @@ The 'generateActions' function will generate 2 action creators for each http act
 * get http action: for each get http action, an action creator function with the name 'get + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'getArtist' will be created. The 'get' function will take 1 parameter - 'params' which contains values for the parameters defined in the url or path properties.
 * post http action: for each post http action, an action creator function with the name 'post + object name' will be created. For example, if you have an action object named 'saveArtist', then an action creator function named 'postSaveArtist' will be created. The 'post' function will take 2 parameters - 'body' and 'params', and 'body' will be the object that will be posted to the server.
 * any action: for any action (including http actions), an action creator function with the name 'set + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'setArtist' will be created. The 'set' function will take 2 parameters - 'payload' and 'params', and 'payload' will be the value/object that will be put on the store.
+
+### Define parameters in the url or path property
+
+You can define parameters in the url or path property:
+
+```js
+url: 'http://localhost/api/updateAlbumRate/{artist}/{album}/{rate}',
+path: 'artist.album[id].rate'
+```
+
+Assuming this is a get http action, then you call the action creator with the values of the parameters.
+
+```js
+this.props.getUpdateAlbumRate({
+  artist: 'Michael Jackson',
+  album: 'Bad',
+  rate: 88,
+  id: 5
+})
+```
+
+## Update nested store object with path
+
+When it comes to updating a value in a deeply nested store object, keeping it immutable is a challenge. No-redux provides a way for you to define a path to locate the property or sub-object you want to update/insert/delete, and return a new state without modifying the old one.
+
+### Locate an array element in the path
+
+When locating an array element, you can:
+
+* specify a zero-based index, like 'artists[2]', or
+* specify a key/value pair, like 'artists[id=5]', no-redux will find the first object in the artists list with the id property equals to 5.
+
+For string values, no quotes needed - 'artists[name=Michael Jackson]'.
+
+It can be parameterized, like 'artists[id={id}]'. And if the name of the property is the same as the name of the parameter, it can be shortened as 'artists[id]'.
+
+Sometimes it's useful to define different parameter names to avoid name conflict, 'artists[name={artistName}].albums[name={albumName}]'.
+
+Let's look at an example. If you want to update the rate of an album in the store, first define an action object:
+
+```js
+rate: {
+  path: 'artists[id].albums[name].rate',
+},
+```
+
+Then call the setPath function with payload and params:
+
+```js
+this.props.setRate(88, { id: 5, name: 'Bad' });
+```
+
+### Add element to an array
+
+If you leave the array element locator empty, it means you want to add a new element to the array:
+
+```js
+album: {
+  path: 'artists[id].albums[]',
+}
+...
+this.props.setAlbum({ name: "Off the Wall", year: 1979 }, { id: 5 })
+```
+
+You can also specify the locator, but do not provide a value for the parameter, it also means you want to insert the element to the array.
+
+```js
+album: {
+  path: 'artists[id].albums[name]',
+}
+...
+this.props.setAlbum({ name: "Off the Wall", year: 1979 }, { id: 5 })
+```
+
+### Remove element from an array
+
+If you update the array element with 'null', that element will be removed from the array.
+
+```js
+album: {
+  path: 'artists[id].albums[name]',
+}
+...
+this.props.setAlbum(null, { id: 5, name: 'Bad' })
+```
+
+As you can see, you can define just 1 action object to achieve update/insert/delete functionalities.
 
 *...to be continued*
