@@ -128,7 +128,7 @@ test('multi reducers', () => {
   expect(store1.getState().movie.actors[1].movies[1].name).toBe('Star Wars: A New Hope');
 });
 
-// extra reducers
+// multiple reducers
 
 const reducer1 = (s = { p1: 5 }, a) => {
   switch (a.type) {
@@ -160,7 +160,7 @@ test('extra reducers', () => {
 });
 
 
-// extra middlewares (saga), intsall redux-saga to run the test below
+// external middlewares (saga), intsall redux-saga to run the test below
 
 // const saga = function* () {
 //   yield [

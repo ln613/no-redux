@@ -4,34 +4,33 @@
 
 A react/redux library which automates all redux flows. No more action creators, reducers, thunks/sagas..., and immutability is guaranteed. Redux becomes invisible to you, hence the name no-redux.
 
-## Table of Contents
+### Table of Contents
 
-  * [The idea](#the-idea)
-  * [Install](#install)
-  * [Usage](#usage)
-  * [Define action data](#define-action-data)
-    * [Action object properties](#action-object-properties)
-    * [Store action vs http action](#store-action-vs-http-action)
-    * [Get http action vs post http action](#get-http-action-vs-post-http-action)
-    * [Generate action creators with generateActions](#generate-action-creators-with-generateactions)
-      * [get action creator](#get-action-creator)
-      * [post action creator](#post-action-creator)
-      * [set action creator](#set-action-creator)
-    * [Use the after property to specify a different payload](#use-the-after-property-to-specify-a-different-payload)
-    * [Define parameters in the url or path property](#define-parameters-in-the-url-or-path-property)
-    * [Use the body property as a body creator for post](#use-the-body-property-as-a-body-creator-for-post)
-    * [Pre-defined actions](#pre-defined-actions)
-      * [Handle http errors](#handle-http-errors)
-      * [isLoading flag](#isloading-flag)
-  * [Update nested store object with path](#update-nested-store-object-with-path)
-    * [Locate an array element in the path](#locate-an-array-element-in-the-path)
-    * [Add element to an array](#add-element-to-an-array)
-    * [Remove element from an array](#remove-element-from-an-array)
-    * [Save the changes to the server and update the state](#save-the-changes-to-the-server-and-update-the-state)
-  * [Use selectors for derived data](#use-selectors-for-derived-data)
-  * [Multiple reducers](#multiple-reducers)
-  * [External reducers and middlewares](#external-reducers-and-middlewares)
-
+* [The idea](#the-idea)
+* [Install](#install)
+* [Usage](#usage)
+* [Define action data](#define-action-data)
+  * [Action object properties](#action-object-properties)
+  * [Store action vs http action](#store-action-vs-http-action)
+  * [Get http action vs post http action](#get-http-action-vs-post-http-action)
+  * [Generate action creators with generateActions](#generate-action-creators-with-generateactions)
+    * [get action creator](#get-action-creator)
+    * [post action creator](#post-action-creator)
+    * [set action creator](#set-action-creator)
+  * [Use the after property to specify a different payload](#use-the-after-property-to-specify-a-different-payload)
+  * [Define parameters in the url or path property](#define-parameters-in-the-url-or-path-property)
+  * [Use the body property as a body creator for post](#use-the-body-property-as-a-body-creator-for-post)
+  * [Pre-defined actions](#pre-defined-actions)
+    * [Handle http errors](#handle-http-errors)
+    * [isLoading flag](#isloading-flag)
+* [Update nested store object with path](#update-nested-store-object-with-path)
+  * [Locate an array element in the path](#locate-an-array-element-in-the-path)
+  * [Add element to an array](#add-element-to-an-array)
+  * [Remove element from an array](#remove-element-from-an-array)
+  * [Save the changes to the server and update the state](#save-the-changes-to-the-server-and-update-the-state)
+* [Use selectors for derived data](#use-selectors-for-derived-data)
+* [Multiple reducers](#multiple-reducers)
+* [External reducers and middlewares](#external-reducers-and-middlewares)
 
 
 ## The idea
@@ -58,13 +57,14 @@ This way, the reducers will be simplified to do 1 thing only - putting the paylo
 
 No-redux also provides a createStore function for the initial configuration, so you don't need to install or import redux/thunk/saga... any more, redux becomes invisible to you. For redux beginners, with no-redux, you don't even need to fully understand redux to use redux.
 
+
 ## Install
 
 `npm i -S no-redux`
 
 ## Usage
 
-**Step 1**
+### Step 1
 
 Create a declarative action data file.
 
@@ -80,7 +80,7 @@ export const actionData = {
 export default generateActions(actionData);
 ```
 
-**Step 2**
+### Step 2
 
 Create a redux store by calling the createStore function from 'no-redux' with the action data object you defined in step 1.
 
@@ -99,7 +99,7 @@ render(
 );
 ```
 
-**Step 3**
+### Step 3
 
 In your component, connect to the store with the action creators you created in step 1. When you call the action creator functions, no-redux will generate the actions, make http requests, get the http response and put the results on the redux store.
 
@@ -335,15 +335,16 @@ this.props.postNewAlbum({
  }, { id: 5 })
 ```
 
-Or if the server doesn't return the original body you are posting, you can still access it from the body parameter.
+Or if the server doesn't return the original object, you can still access it from the body.
 
 ```js
 after: (response, body) => body.newAlbum
 ```
-
 
 ## Use selectors for derived data
 
 ## Multiple reducers
 
 ## External reducers and middlewares
+
+*...to be continued*
