@@ -90,7 +90,8 @@ export const parsePath = (path, name) => {
 };  
 
 export const attachDefault = merge({
-  error: {}
+  error: {},
+  isLoading: {},
 });
 
 export const ofType = (a, as) =>

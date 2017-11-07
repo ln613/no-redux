@@ -7,13 +7,13 @@ export default l => {
 
   return (s = {}, a) => {
     if (keys.map(k => toGet(k, l[k])).indexOf(a.type) > -1)
-      return Object.assign({}, s, { isLoading: true });
+      return Object.assign({}, s, { isLoading: true, error: null });
     
     if (keys.map(toSet).indexOf(a.type) === -1)
       return s;
 
     if (a.error)
-      return Object.assign({}, s, { error: a.error });
+      return Object.assign({}, s, { error: a.error, isLoading: false });
     
     const path = is(Function, a.path)
       ? a.path(a.params, s)
