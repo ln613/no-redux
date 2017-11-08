@@ -46,7 +46,7 @@ In your component, connect to the store with the action creators you created in 
 ```js
 import React from 'react';
 import { connect } from 'no-redux';
-import actions from '../actions';
+import actions from './actions';
 
 class App extends React.Component {
   componentWillMount() {

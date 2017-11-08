@@ -106,7 +106,7 @@ In your component, connect to the store with the action creators you created in 
 ```js
 import React from 'react';
 import { connect } from 'no-redux';
-import actions from '../actions';
+import actions from './actions';
 
 class App extends React.Component {
   componentWillMount() {
@@ -218,7 +218,7 @@ You can provide a function to generate the body for the post http action if the 
 
 #### Handle http errors
 
-If there are errors thrown during http calls (404, 502...), no-redux will put the error on the store under the 'error' property.
+If there are errors thrown during http calls (404, 500...), no-redux will put the error on the store under the 'error' property.
 
 Everytime a new http request is made, the 'error' property will be set to null. You can also clear the 'error' property by calling:
 
@@ -343,6 +343,55 @@ after: (response, body) => body.newAlbum
 
 
 ## Use selectors for derived data
+
+Since the store only keeps the minimal raw data, any derived/computed data should be done in the mapStateToProps stage with selectors.
+
+```js
+import { createSelector, mapStateWithSelectors } from 'no-redux';
+import { sortBy, prop } from 'ramda';
+
+const artists = s => s.artists || [];
+const filter = s => s.filter || '';
+const sortByProp = s => s.sortByProp || '';
+const isLoading = s => s.isLoading;
+
+const filteredArtists = createSelector(
+  artists,
+  filter,
+  (l, f) => l.filter(x => x.name.indexOf(f) > -1)
+);
+
+const sortedArtists = createSelector(
+  filteredArtists,
+  sortByProp,
+  (l, p) => sortBy(prop(p), l)
+);
+
+export const artistsSelector = mapStateWithSelectors({
+  artists: filteredArtists,
+  isLoading
+});
+
+```
+
+```js
+import { artistsSelector } from './selectors';
+...
+export default connect(artistsSelector, actions)(App);
+```
+
+The createSelector function allows you to combine selectors by taking the results of all but the last selector and sending them to the last selector as input.
+
+The createSelector function has the 'memoize' feature, which means it will cache the previous result, and return the cached result without recalculation if the parameters are the same (based on reference equality). This will greatly improve performance by avoiding recalculation if unrelated data is changed in the store, especially when the business logic is complex and time consuming.
+
+The mapStateWithSelectors function is just a helper function to generate the mapStateToProps function. So in the above example, the mapStateWithSelectors function will generate the following function:
+
+```js
+state => ({
+  artists: filteredArtists(state),
+  isLoading: isLoading(state)
+});
+```
 
 ## Multiple reducers
 
