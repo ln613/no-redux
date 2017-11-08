@@ -128,7 +128,7 @@ test('multi reducers', () => {
   expect(store1.getState().movie.actors[1].movies[1].name).toBe('Star Wars: A New Hope');
 });
 
-// multiple reducers
+// external reducers
 
 const reducer1 = (s = { p1: 5 }, a) => {
   switch (a.type) {

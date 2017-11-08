@@ -150,25 +150,25 @@ If the method property is 'post', it's a post http action, otherwise it's a get 
 
 ### Generate action creators with generateActions
 
-The 'generateActions' function will generate 2 action creators for each http action, 1 action creator for each store action.
+The 'generateActions' function will generate 2 action creators for each http action, one action creator for each store action.
 
 #### get action creator
 
 For each get http action, an action creator function with the name 'get + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'getArtist' will be created.
 
-The 'get' function will take 1 parameter - 'params' which contains values for the parameters defined in the url or path properties.
+The 'get' function will take one parameter - 'params' which contains values for the parameters defined in the url or path properties.
 
 #### post action creator
 
 For each post http action, an action creator function with the name 'post + object name' will be created. For example, if you have an action object named 'saveArtist', then an action creator function named 'postSaveArtist' will be created.
 
-The 'post' function will take 2 parameters - 'body' and 'params', and 'body' will be the object that will be posted to the server.
+The 'post' function will take two parameters - 'body' and 'params', and 'body' will be the object that will be posted to the server.
 
 #### set action creator
 
 For both store actions and http actions, an action creator function with the name 'set + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'setArtist' will be created.
 
-The 'set' function will take 2 parameters - 'payload' and 'params', and 'payload' will be the value/object that will be put on the store.
+The 'set' function will take two parameters - 'payload' and 'params', and 'payload' will be the value/object that will be put on the store.
 
 For http actions, when you call the 'get/post' action creators, the http request will be made. And when the response is back, no-redux will call the corresponding 'set' action creator with the http response as the payload.
 
@@ -303,7 +303,7 @@ album: {
 this.props.setAlbum(null, { id: 5, name: 'Bad' })
 ```
 
-As you can see, you can define just 1 action object to achieve all update/insert/delete functionalities, or you can define an action object for each functionality.
+As you can see, you can define just one action object to achieve all update/insert/delete functionalities, or you can define an action object for each functionality.
 
 ### Save the changes to the server and update the state
 
@@ -368,11 +368,13 @@ const sortedArtists = createSelector(
 );
 
 export const artistsSelector = mapStateWithSelectors({
-  artists: filteredArtists,
+  artists: sortedArtists,
   isLoading
 });
 
 ```
+
+Then in the component:
 
 ```js
 import { artistsSelector } from './selectors';
@@ -382,17 +384,90 @@ export default connect(artistsSelector, actions)(App);
 
 The createSelector function allows you to combine selectors by taking the results of all but the last selector and sending them to the last selector as input.
 
-The createSelector function has the 'memoize' feature, which means it will cache the previous result, and return the cached result without recalculation if the parameters are the same (based on reference equality). This will greatly improve performance by avoiding recalculation if unrelated data is changed in the store, especially when the business logic is complex and time consuming.
+The createSelector function has the 'memoize' feature, which means it will cache the previous result, and return the cached result without recalculation if the parameters are the same (based on reference equality). This will greatly improve performance by avoiding recalculation if unrelated data is changed in the store, especially when the business logic in the selector is complex and time consuming.
 
-The mapStateWithSelectors function is just a helper function to generate the mapStateToProps function. So in the above example, the mapStateWithSelectors function will generate the following function:
+The mapStateWithSelectors function is just a helper function to generate the mapStateToProps function. In the above example, the mapStateWithSelectors function will generate the following function:
 
 ```js
 state => ({
-  artists: filteredArtists(state),
+  artists: sortedArtists(state),
   isLoading: isLoading(state)
 });
 ```
 
 ## Multiple reducers
 
+No-redux will generate one reducer for each action data object you define. When there is more than one action data object/reducer, you have to give each one a name, just like what you do with combineReducers from redux.
+
+```js
+export const musicActions = {
+  artists: {
+    url: 'http://localhost/api/artists'
+  },
+  ...
+}
+
+export const movieActions = {
+  movies: {
+    url: 'http://localhost/api/movies'
+  },
+  ...
+}
+
+export const musicActionCreators = generateActions(musicActions);
+export const movieActionCreators = generateActions(movieActions);
+```
+
+Then in your index.js file:
+
+```js
+...
+<Provider store={createStore({
+  music: musicActions,
+  movie: movieActions
+})}>
+...
+```
+
+Then in your selectors, you also need to select from the corresponding reducer:
+
+```js
+const artists = s => s.music.artists || [];
+...
+const movies = s => s.movie.movies || [];
+```
+
 ## External reducers and middlewares
+
+If you encounter scenarios or functionalities that no-redux does not cover, you can still use regular reducers and redux middlewares like redux-saga, together with no-redux.
+
+The createStore function provided by no-redux has four parameters. The third is the external reducers, and the fourth is the external middlewares.
+
+```js
+const exReducer = (s = { p1: 5 }, a) => {
+  switch (a.type) {
+    case 'P1':
+      return Object.assign({}, s, { p1: a.payload });
+    default:
+      return s;  
+  }
+}
+
+const saga = function* () {
+  yield [
+    takeEvery('P2', function* (a) {
+      yield put({ type: 'P1', payload: 10 });
+    }),
+  ]
+}
+
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore({ music: musicAction }, {}, { exReducer }, [sagaMiddleware]);
+
+sagaMiddleware.run(saga);
+
+...
+<Provider store={store}>
+...
+```

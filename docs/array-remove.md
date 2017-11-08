@@ -10,4 +10,4 @@ album: {
 this.props.setAlbum(null, { id: 5, name: 'Bad' })
 ```
 
-As you can see, you can define just 1 action object to achieve all update/insert/delete functionalities, or you can define an action object for each functionality.
+As you can see, you can define just one action object to achieve all update/insert/delete functionalities, or you can define an action object for each functionality.
