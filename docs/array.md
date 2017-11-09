@@ -19,7 +19,7 @@ rate: {
 },
 ```
 
-Then call the setPath function with payload and params:
+Then call the setRate function with payload and params:
 
 ```js
 this.props.setRate(88, { id: 5, name: 'Bad' });
