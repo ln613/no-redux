@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Artists from './Artists';
 import 'reveal.js/lib/js/head.min';
 import Reveal from 'reveal.js/js/reveal';
 import hljs from 'highlight.js/lib/highlight';
@@ -7,6 +6,8 @@ import 'react-highlight';
 import 'reveal.js/css/reveal.css';
 import 'reveal.js/css/theme/beige.css';
 import 'highlight.js/styles/tomorrow-night-bright.css';
+
+import Artists from './components/Artists';
 
 class App extends Component {
   componentDidMount() {
@@ -125,6 +126,15 @@ this.props.postRate(99, { artistId: 5, albumId: 3 });`}
             <li>When the response is received, the corresponding <i>set</i> action creator will be called with the response as payload</li>
             <li>The reducer will put the payload on the store under the name defined by the <i>path</i> property (or the action name if there is no path)</li>
           </ul>
+        </section>
+
+        <section>
+          <h2>Example 1</h2>
+          <Artists/>
+          <p>
+            <small><a href="https://ln613.github.io/no-redux/api/artists.json" target="_blank">Check json api</a></small><br/>
+            <small><a href="https://github.com/ln613/no-redux/blob/master/example/src/components/Artists.js" target="_blank">View Source</a></small>
+          </p>
         </section>
       </div>
     );

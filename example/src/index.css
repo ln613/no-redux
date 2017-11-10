@@ -6,3 +6,6 @@ body {
 .slides {
   width: 80% !important;
 }
+.center {
+  text-align: center;
+}
