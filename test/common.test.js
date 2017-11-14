@@ -1,17 +1,18 @@
-import { toGet, toSet, isPost, replace, getParams, parsePath } from '../src/common';
+import { toHttpMethods, toSet, replace, getParams, parsePath } from '../src/common';
 
-test('toGet', () => {
-  expect(toGet('list')).toBe('getList');
-  expect(toGet('list', { method: 'post' })).toBe('postList');
+test('toHttpMethods', () => {
+  expect(toHttpMethods('list')).toEqual([['get', 'getList']]);
+  expect(toHttpMethods('artist', { method: 'post' })).toEqual([['post', 'postArtist']]);
+  expect(toHttpMethods('artist', { method: 'PUT' })).toEqual([['put', 'putArtist']]);
+  expect(toHttpMethods('artist', { methods: ['GET', 'POST', 'put', 'delete'] }))
+    .toEqual([['get', 'getArtist'], ['post', 'postArtist'], ['put', 'putArtist'], ['delete', 'deleteArtist']]);
+  expect(() => toHttpMethods('artist', { method: {} })).toThrow(`'method' property must be a string`);
+  expect(() => toHttpMethods('artist', { methods: {} })).toThrow(`'methods' property must be a list of strings`);
+  expect(() => toHttpMethods('artist', { methods: ['get', true] })).toThrow(`'methods' property must be a list of strings`);
 });
 
 test('toSet', () => {
   expect(toSet('list')).toBe('setList');
-});
-
-test('isPost', () => {
-  expect(isPost({ method: 'post' })).toBe(true);
-  expect(isPost({ method: 'get' })).toBe(false);
 });
 
 test('replace', () => {
@@ -51,16 +52,16 @@ const state = {
       id: 3,
       name: 'A1',
       albums: [
-        { name: 'a1', year: 1990 },
-        { name: 'a2', year: 1995 },
+        { id: 1, name: 'a1', year: 1990 },
+        { id: 2, name: 'a2', year: 1995 },
       ]
     },
     {
       id: 5,
       name: 'A2',
       albums: [
-        { name: 'a3', year: 1992 },
-        { name: 'a4', year: 1998 },
+        { id: 3, name: 'a3', year: 1992 },
+        { id: 4, name: 'a4', year: 1998 },
       ]
     }
   ]

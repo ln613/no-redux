@@ -5,9 +5,13 @@ import hljs from 'highlight.js/lib/highlight';
 import 'react-highlight';
 import 'reveal.js/css/reveal.css';
 import 'reveal.js/css/theme/beige.css';
-import 'highlight.js/styles/tomorrow-night-bright.css';
+import 'highlight.js/styles/vs.css';
+import { api } from './actions';
 
 import Artists from './components/Artists';
+import Artist from './components/Artist';
+
+const src = 'https://github.com/ln613/no-redux/blob/master/example/src/components/';
 
 class App extends Component {
   componentDidMount() {
@@ -49,8 +53,8 @@ class App extends Component {
 
         <section>
           <h2>Define action data</h2>
-          <p>All you need to do is to specify the data about the actions.</p>
-          <pre><code className="language-javascript">
+          <p>You only need to define the data about the actions.</p>
+          <pre className="card"><code className="language-javascript">
 {`export const actionData = {
   artists: {
     url: 'http://localhost/api/artists'
@@ -63,14 +67,14 @@ class App extends Component {
     method: 'post',
     path: 'artists[id={artistId}].album[id={albumId}].rate'
   },
-  ...
+  //...
 }`}
           </code></pre>
         </section>
 
         <section>
-          <h2>Create redux store with the action data</h2>
-          <pre><code className="language-javascript">
+          <h3>Create redux store with the action data</h3>
+          <pre className="card"><code className="language-javascript">
 {`import React from 'react';
 import { render } from 'react-dom';
 import { Provider, createStore } from 'no-redux';
@@ -89,52 +93,116 @@ render(
         <section>
           <h2>Generate action creators</h2>
           <ol>
-            <li>Call <i>generateActions</i> function to generate action creators</li>
-            <pre><code className="language-javascript">
+            <li>Call <i>generateActions</i> to generate action creators</li>
+            <pre className="card"><code className="language-javascript">
 {`import { generateActions } from 'no-redux';
-...
+//...
 export default generateActions(actionData);`}
             </code></pre>
             <li>Map the action creators to the component props</li>
-            <pre><code className="language-javascript">
+            <pre className="card"><code className="language-javascript">
 {`import { connect } from 'no-redux';
 import actions from './actions';
-...
+//...
 export default connect(selector, actions)(App);`}
             </code></pre>
           </ol>  
         </section>
 
         <section>
-          <h2>Get, post, set</h2>
+          <h2>Action creators</h2>
           <ul>
-						<li>A <i>get</i> (or <i>post</i> if the method is 'post') action creator will be created for every action with url, used to make http request</li>
-						<li className="fragment fade-up">A <i>set</i> action creator will be created for every action, used to put payload on the store</li>
+            <li>One action creator for each http method, e.g., <i>getArtist, postArtist, putArtist, patchArtist and deleteArtist</i>, used to make http calls</li>
+						<li className="fragment fade-up">One <i>set</i> action creator for every action, e.g., <i>setArtist</i>, used to put payload on the store</li>
 					</ul>          
         </section>
 
         <section>
-          <h2>Call the action creators</h2>
-          <p>When you call the <i>get/post</i> action creators:</p>
-          <pre><code className="language-javascript">
+          <h2>Call the http action creators</h2>
+          <pre className="card"><code className="language-javascript">
 {`this.props.getArtists();
 this.props.getArtist({ id: 5 });
 this.props.postRate(99, { artistId: 5, albumId: 3 });`}
           </code></pre>
+          <p>When you call http action creators, no-redux will:</p>
           <ul>
-            <li>An http request will be made</li>
-            <li>When the response is received, the corresponding <i>set</i> action creator will be called with the response as payload</li>
-            <li>The reducer will put the payload on the store under the name defined by the <i>path</i> property (or the action name if there is no path)</li>
+            <li>Make http request</li>
+            <li>Receive http response, call the <i>set</i> action creator with the response</li>
+            <li>Put the payload/response on the store under the action name/path</li>
           </ul>
         </section>
 
         <section>
           <h2>Example 1</h2>
-          <Artists/>
-          <p>
-            <small><a href="https://ln613.github.io/no-redux/api/artists.json" target="_blank">Check json api</a></small><br/>
-            <small><a href="https://github.com/ln613/no-redux/blob/master/example/src/components/Artists.js" target="_blank">View Source</a></small>
-          </p>
+          <div className="flex">
+            <pre className="card w50"><code className="language-javascript">
+{`export const actionData = {
+  artists: {
+    url: 'http://localhost/api/artists'
+  }
+}
+
+// in the component...
+
+render(
+  <div>
+    <Button onClick={() => this.props.getArtists()}>
+      Load Artists
+    </Button>
+    <Button onClick={() => this.props.setArtists()}>
+      Clear Artists
+    </Button>
+    ...
+  </div>
+)`}
+            </code></pre>
+            <div className="w50">
+              <div className="spacer"/>
+              <Artists/>
+              <p>
+                <small><a href={api + 'artists'} target="_blank">Check json api</a></small><br/>
+                <small><a href={src + 'Artists.js'} target="_blank">View Source</a></small>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Example 2</h2>
+          <p>Url with parameters</p>
+          <div className="flex">
+            <pre className="card w50"><code className="language-javascript">
+{`export const actionData = {
+  artist: {
+    url: 'http://localhost/api/artists/{id}'
+  }
+}
+
+// in the component...
+
+render(
+  <div>
+    <Button
+      onClick={() => this.props.getArtist({ id: 5 })}
+    >
+      Load Artist
+    </Button>
+    <Button onClick={() => this.props.setArtist()}>
+      Clear Artist
+    </Button>
+    ...
+  </div>
+)`}
+            </code></pre>
+            <div className="w50">
+              <div className="spacer"/>
+              <Artist/>
+              <p>
+                <small><a href={api + 'artist/5'} target="_blank">Check json api</a></small><br/>
+                <small><a href={src + 'Artist.js'} target="_blank">View Source</a></small>
+              </p>
+            </div>
+          </div>
         </section>
       </div>
     );

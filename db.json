@@ -1,0 +1,20 @@
+{
+  "artists": [
+    {
+      "id": 3,
+      "name": "Phil Collins",
+      "albums": [
+        { "name": "Face Value", "year": 1981 },
+        { "name": "No Jacket Required", "year": 1985 }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Michael Jackson",
+      "albums": [
+        { "name": "Off the Wall", "year": 1979 },
+        { "name": "Bad", "year": 1988 }
+      ]
+    }
+  ]
+}

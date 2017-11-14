@@ -1,5 +1,5 @@
 import { fromPairs, reduce, isNil } from 'ramda';
-import { parsePath, toGet, toSet, isPost, replace, attachDefault } from './common';
+import { parsePath, toHttpMethods, toSet, replace, attachDefault, hasBody } from './common';
 
 const createAction = (t, action) => {
   const type = toSet(t);
@@ -14,21 +14,25 @@ const createAction = (t, action) => {
   ];
 };
 
-const createHttpAction = (t, action) => {
-  const type = toGet(t, action);
+const createHttpActions = (t, action) => {
+  const types = toHttpMethods(t, action);
 
-  const fn = (body, params) => ({
-    type,
-    url: replace(action.url, params),
-    path: parsePath(action.path, t),
-    params,
-    body: body && (action.body ? action.body(body) : body)
-  });
+  const fn = type => (body, params) => {
+    if (!params && !hasBody(type[0])) {
+      params = body;
+      body = null;
+    }
+    
+    return {
+      type: type[1],
+      url: replace(action.url, params),
+      path: parsePath(action.path, t, type[0]),
+      params,
+      body: body && (action.body ? action.body(body) : body)
+    }
+  };
 
-  return [
-    type,
-    isPost(action) ? fn : params => fn(null, params)
-  ];
+  return types.map(type => [type[1], fn(type)]);
 };
 
 export default l => {
@@ -36,8 +40,7 @@ export default l => {
   return fromPairs(reduce((p, c) => {
     const a1 = createAction(c, l[c]);
     return l[c].url
-      ? [...p, createHttpAction(c, l[c]), a1]
+      ? [...p, ...createHttpActions(c, l[c]), a1]
       : [...p, a1];
   }, [], Object.keys(l)));
 };
-

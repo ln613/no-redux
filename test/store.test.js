@@ -5,11 +5,12 @@ import generateActions from '../src/actions';
 
 const actionData = {
   artists: {
-    url: 'http://localhost/getartists'
+    url: 'http://localhost/artists',
+    methods: ['get', 'post']
   },
-  saveArtist: {
-    url: 'http://localhost/saveartists/{id}',
-    method: 'post',
+  artist: {
+    url: 'http://localhost/artist/{id}',
+    methods: ['get', 'post', 'put', 'delete'],
     path: 'artists[id]'
   },
   year: {
@@ -21,9 +22,6 @@ const actionData = {
   album: {
     path: 'artists[id].albums[name]'
   },
-  newAlbum: {
-    path: 'artists[id].albums[]'
-  },
 };
 
 const artists = [
@@ -31,16 +29,16 @@ const artists = [
     id: 3,
     name: 'Phil Collins',
     albums: [
-      { name: 'Face Value', year: 1981 },
-      { name: 'No Jacket Required', year: 1985 },
+      { id: 1, name: 'Face Value', year: 1981 },
+      { id: 2, name: 'No Jacket Required', year: 1985 },
     ]
   },
   {
     id: 5,
     name: 'Michael Jackson',
     albums: [
-      { name: 'Off the Wall', year: 1979 },
-      { name: 'Bad', year: 1988 },
+      { id: 3, name: 'Off the Wall', year: 1979 },
+      { id: 4, name: 'Bad', year: 1988 },
     ]
   },
 ];
@@ -52,9 +50,13 @@ const actions = generateActions(actionData);
 test('generate action creators', () => {
   expect(actions).toEqual(expect.objectContaining({
     getArtists: expect.any(Function),
+    postArtists: expect.any(Function),
     setArtists: expect.any(Function),
-    postSaveArtist: expect.any(Function),
-    setSaveArtist: expect.any(Function),
+    getArtist: expect.any(Function),
+    postArtist: expect.any(Function),
+    putArtist: expect.any(Function),
+    deleteArtist: expect.any(Function),
+    setArtist: expect.any(Function),
     setYear: expect.any(Function),
   }));
 });
@@ -75,13 +77,9 @@ test('store', () => {
   store.dispatch(actions.setYear(1987, { id: 5, name: 'Bad' }));
   expect(store.getState().artists[1].albums[1].year).toBe(1987);
 
-  let newAlbum = { name: 'Thriller', year: 1982 };
-  store.dispatch(actions.setNewAlbum(newAlbum, { id: 5 }));
-  expect(store.getState().artists[1].albums[2]).toMatchObject(newAlbum);
-
-  newAlbum = { name: 'Dangerous', year: 1991 };
+  let newAlbum = { name: 'Dangerous', year: 1991 };
   store.dispatch(actions.setAlbum(newAlbum, { id: 5 }));
-  expect(store.getState().artists[1].albums[3]).toMatchObject(newAlbum);
+  expect(store.getState().artists[1].albums[2]).toMatchObject(newAlbum);
 
   expect(store.getState().artists[1].albums.findIndex(x => x.name === 'Bad')).toEqual(1);
   store.dispatch(actions.setAlbum(null, { id: 5, name: 'Bad' }));
@@ -102,16 +100,16 @@ const actors = [
     id: 2,
     name: 'Tom Cruise',
     movies: [
-      { name: 'Top Gun', year: 1986 },
-      { name: 'The Mummy', year: 2017 },
+      { id: 1, name: 'Top Gun', year: 1986 },
+      { id: 2, name: 'The Mummy', year: 2017 },
     ]
   },
   {
     id: 4,
     name: 'Harrison Ford',
     movies: [
-      { name: 'Blade Runner', year: 1982 },
-      { name: 'Star Wars', year: 1977 },
+      { id: 3, name: 'Blade Runner', year: 1982 },
+      { id: 4, name: 'Star Wars', year: 1977 },
     ]
   },
 ];
@@ -152,7 +150,7 @@ test('extra reducers', () => {
 
   const newArtist = { id: 7, name: 'Elton John' };
   store2.dispatch(actions.setArtists(artists));
-  store2.dispatch(actions.setSaveArtist(newArtist, { id: 3 }));
+  store2.dispatch(actions.setArtist(newArtist, { id: 3 }));
   expect(store2.getState().music.artists[0]).toMatchObject(newArtist);
 
   store2.dispatch({ type: 'P1', payload: 9 });

@@ -1,4 +1,4 @@
-import { last, reduce, is, isNil, view, lensPath, unnest, merge } from 'ramda';
+import { last, reduce, is, isNil, all, view, lensPath, unnest, merge, toLower, contains } from 'ramda';
 
 const find = (a, p, v, c) => {
   const idx = a.findIndex(x => is(Object, x)
@@ -45,8 +45,8 @@ const getIndex = (arr, prop, params) => {
     return findWithParam(arr, propName, propName, params);  
 }
 
-export const parsePath = (path, name) => {
-  if (!path) return [name];
+export const parsePath = (path, name, method) => {
+  if (!path) path = name;
 
   const lens = path.split('.').map(x => {
     if (last(x) !== ']') return x;
@@ -62,31 +62,36 @@ export const parsePath = (path, name) => {
     return [arrName, prop];
   });
 
-  return (params, state) => reduce((p, c) => {
-    if (!is(Array, c)) return [...p, replace(c, params)];
-    
-    const arrName = replace(c[0], params);
-    const prop = c[1];
-    
-    let arr = view(lensPath([...p, arrName]), state);
-    let idx = null;
+  return (params, state, statusCode) => {
+    if (lens.length > 0 && is(String, last(lens)) && isRestfulPost(method, statusCode)) // restful post to array
+      lens[lens.length - 1] = [last(lens), ''];
 
-    if (!arr && prop === '')
-      idx = 0;
-    else if (!is(Array, arr))
-      throw new Error(`${arrName} is not an array`);
-    else if (prop === '')
-      idx = arr.length;
-    else if (!Number.isNaN(+prop))
-      idx = +prop;
-    else
-      idx = getIndex(arr, prop, params);
-    
-    if (idx === -1)
-      throw new Error(`Item not found with '${prop}'`);
-    
-    return [...p, arrName, idx];
-  }, [], lens);
+    return reduce((p, c) => {
+      if (!is(Array, c)) return [...p, replace(c, params)];
+      
+      const arrName = replace(c[0], params);
+      const prop = c[1];
+      
+      let arr = view(lensPath([...p, arrName]), state);
+      let idx = null;
+
+      if (!arr && prop === '')
+        idx = 0;
+      else if (!is(Array, arr))
+        throw new Error(`${arrName} is not an array`);
+      else if (prop === '')
+        idx = arr.length;
+      else if (!Number.isNaN(+prop))
+        idx = +prop;
+      else
+        idx = getIndex(arr, prop, params);
+      
+      if (idx === -1)
+        throw new Error(`Item not found with '${prop}'`);
+      
+      return [...p, arrName, idx];
+    }, [], lens);
+  };
 };  
 
 export const attachDefault = merge({
@@ -102,14 +107,19 @@ export const upper = x =>
     ? x[0].toUpperCase() + x.slice(1)
     : '';
 
-export const toGet = (x, a) =>
-  (isPost(a) ? 'post' : 'get') + upper(x);
+export const toHttpMethods = (x, a) => {
+  if (a && a.methods && !(is(Array, a.methods) && all(is(String), a.methods)))
+    throw new Error(`'methods' property must be a list of strings`);
+  
+  if (a && a.method && !is(String, a.method))
+    throw new Error(`'method' property must be a string`);
+  
+  return ((a && a.methods) || [(a && a.method) || 'get'])
+    .map(m => [toLower(m), toLower(m) + upper(x)]);
+}
 
 export const toSet = x =>
   'set' + upper(x);
-
-export const isPost = x =>
-  x && is(String, x.method) && x.method.toLowerCase() === 'post';
 
 export const getParams = s =>
   (s.match(/{(.*?)}/g) || [])
@@ -131,3 +141,9 @@ export const replace = (s, params) => {
   
   return s;
 }
+
+export const isRestfulPost = (method, statusCode) =>
+  method === 'post' && statusCode === 201;
+
+export const hasBody = method =>
+  contains(method, ['post', 'put', 'patch']);

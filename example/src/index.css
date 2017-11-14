@@ -3,9 +3,22 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
-.slides {
-  width: 80% !important;
+.flex {
+  display: flex;
 }
-.center {
-  text-align: center;
+.reveal div.main {
+  font-size: 24px;
+}
+.card, .reveal pre.card {
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 10px 30px 0px rgba(0,0,0,.3);
+  background: white;
+  font-size: 14px;
+}
+.w50, .reveal pre.card.w50 {
+  width: 50%;
+}
+.spacer {
+  height: 15px;
 }

@@ -20,7 +20,7 @@ class Artists extends React.Component {
           </Button>
         </ButtonGroup>  
         
-        <div>
+        <div className="main">
           {(this.props.artists || []).map(a => 
             <div>{a.name}</div>
           )}

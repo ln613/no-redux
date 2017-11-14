@@ -1,23 +1,21 @@
 ### Generate action creators with generateActions
 
-The 'generateActions' function will generate 2 action creators for each http action, one action creator for each store action.
+Assuming we have defined an action object named artist.
 
-#### get action creator
+The generateActions function will generate a setArtist action creator, which will be used for setting the artist property on the redux store.
 
-For each get http action, an action creator function with the name 'get + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'getArtist' will be created.
+If the artist action has a url property (an http action), the generateActions function will generate one action creator for each http method you define with the method or methods property, e.g., getArtist, postArtist, putArtist, patchArtist and deleteArtist, which will be used for making http calls.
 
-The 'get' function will take one parameter - 'params' which contains values for the parameters defined in the url or path properties.
+After the http response is received, the setArtist function will be called.
 
-#### post action creator
+For get http actions, the http response will be put on the store.
 
-For each post http action, an action creator function with the name 'post + object name' will be created. For example, if you have an action object named 'saveArtist', then an action creator function named 'postSaveArtist' will be created.
+For post, put or patch http actions, the body you send to the server will be put on the store, and the http response will be ignored.
 
-The 'post' function will take two parameters - 'body' and 'params', and 'body' will be the object that will be posted to the server.
+For delete http actions, the object will be removed from the store.
 
-#### set action creator
+The getArtist/deleteArtist function takes one parameter - 'params', which contains values for the parameters defined in the url or path properties.
 
-For both store actions and http actions, an action creator function with the name 'set + object name' will be created. For example, if you have an action object named 'artist', then an action creator function named 'setArtist' will be created.
+The postArtist/putArtist/patchArtist function takes two parameters - 'body' and 'params'. 'body' is the object that will be posted to the server.
 
-The 'set' function will take two parameters - 'payload' and 'params', and 'payload' will be the value/object that will be put on the store.
-
-For http actions, when you call the 'get/post' action creators, the http request will be made. And when the response is back, no-redux will call the corresponding 'set' action creator with the http response as the payload.
+The setArtist function takes two parameters - 'payload' and 'params'. 'payload' is the value/object that will be put on the store.

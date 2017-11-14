@@ -7,4 +7,3 @@ If the path property is not provided, it will be the action object name, which m
 #include "docs/array.md"
 #include "docs/array-add.md"
 #include "docs/array-remove.md"
-#include "docs/update-server.md"
