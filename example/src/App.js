@@ -198,7 +198,7 @@ render(
               <div className="spacer"/>
               <Artist/>
               <p>
-                <small><a href={api + 'artist/5'} target="_blank">Check json api</a></small><br/>
+                <small><a href={api + 'artists/5'} target="_blank">Check json api</a></small><br/>
                 <small><a href={src + 'Artist.js'} target="_blank">View Source</a></small>
               </p>
             </div>

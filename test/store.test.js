@@ -65,7 +65,7 @@ test('call action creators', () => {
   expect(actions.setArtists(artists)).toEqual({
     type: 'setArtists',
     payload: artists,
-    path: ['artists'],
+    path: expect.any(Function),
     params: undefined
   });
 });

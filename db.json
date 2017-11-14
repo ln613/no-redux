@@ -4,16 +4,16 @@
       "id": 3,
       "name": "Phil Collins",
       "albums": [
-        { "name": "Face Value", "year": 1981 },
-        { "name": "No Jacket Required", "year": 1985 }
+        { "id": 1, "name": "Face Value", "year": 1981 },
+        { "id": 2, "name": "No Jacket Required", "year": 1985 }
       ]
     },
     {
       "id": 5,
       "name": "Michael Jackson",
       "albums": [
-        { "name": "Off the Wall", "year": 1979 },
-        { "name": "Bad", "year": 1988 }
+        { "id": 3, "name": "Off the Wall", "year": 1979 },
+        { "id": 4, "name": "Bad", "year": 1988 }
       ]
     }
   ]

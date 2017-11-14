@@ -29,7 +29,7 @@ test('getParams', () => {
 });
 
 test('parsePath - object path', () => {
-  expect(parsePath(null, 'abc')).toEqual(['abc']);
+  expect(parsePath(null, 'abc')()).toEqual(['abc']);
   expect(parsePath('p1.p2')()).toEqual(['p1', 'p2']);
   expect(parsePath('p1.{p}.p3')({ p: 'p2' })).toEqual(['p1', 'p2', 'p3']);
 });

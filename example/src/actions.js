@@ -7,7 +7,7 @@ export const actionData = {
     url: api + 'artists'
   },
   artist: {
-    url: api + 'artist/{id}',
+    url: api + 'artists/{id}',
   }
 }
 
