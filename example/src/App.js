@@ -320,7 +320,7 @@ render(
             </div>
             <div className="w50">
               <div className="card c2">
-                <iframe className="todo" src="http://localhost:3000"/>
+                <iframe className="todo" src="https://ln613.github.io/no-redux-todo-example"/>
               </div>  
             </div>
           </div>
