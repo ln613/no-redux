@@ -112,7 +112,8 @@ this.props.postRate(99, {
   },
   artist: {
     url: 'http://localhost/api/artist/{id}',
-    methods: ['put', 'patch', 'delete']
+    methods: ['put', 'patch', 'delete'],
+    path: 'artist[id]'
   },
   //...
 }
@@ -295,27 +296,21 @@ render(
             <div className="w50">
               <pre className="card c2"><code className="language-javascript">
 {`export const actionData = {
-  //...
-  newArtist: {
-    url: 'http://localhost/api/newartist',
-    method: 'post',
-    path: 'artists[]'
-  }
-}
-
-// in the component...
-
-render(
-  <div>
-    <Button onClick={() => this.props.postNewArtist({
-      id: this.getNewId(),
-      name: this.refs.name.value
-    })}>
-      Add Artist
-    </Button>
-    //...
-  </div>
-)`}
+  todos: {
+    url: api + 'todos',
+    methods: ['get', 'post']
+  },
+  todo: {
+    url: api + 'todos/{id}',
+    methods: ['put', 'patch', 'delete'],
+    path: 'todos[id]',
+  },
+  todoName: {
+    path: 'todos[id].name',
+  },
+  newTodo: {},
+  filter: {}
+}`}
               </code></pre>
             </div>
             <div className="w50">
