@@ -19,6 +19,19 @@ body {
 .w50, .reveal pre.card.w50 {
   width: 50%;
 }
+.reveal pre.card.c2, .reveal div.card.c2 {
+  width: 96%;
+  margin: 0;
+  height: 100%;
+}
+.left {
+  text-align: left;
+}
 .spacer {
   height: 15px;
+}
+iframe.todo {
+  margin: 10px;
+  width: 100%;
+  height: 100%;
 }

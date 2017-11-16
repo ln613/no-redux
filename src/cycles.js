@@ -31,23 +31,21 @@ export default l => unnest(
         s => ({
           ACTION: s.HTTP
             .select(type[1])
-            .map(r => r.replaceError(error => xs.of({
-              type: typeSet,
-              error: {
-                source: type[1],
-                text: error.response ? error.response.text : error.stack,
-                status: error.response ? error.response.status : null,
+            .map(r => r.replaceError(error => xs.of(Object.assign(
+              createSetAction(typeSet, type[0], actionObject, error.response),
+              {
+                error: {
+                  source: type[1],
+                  text: tap(console.log, error.response) && error.response.error && error.response.error.message,
+                  status: error.response && error.response.status,
+                }
               }
-            })))
+            ))))
             .flatten()
-            .map(r => r.error ? r : {
-              type: typeSet,
-              payload: getPayload(r, actionObject, type[0]),
-              path: r.request.path,
-              params: r.request.params,
-              method: type[0],
-              statusCode: r.statusCode
-            })
+            .map(r => r.error
+              ? r
+              : createSetAction(typeSet, type[0], actionObject, r)
+            )
         })
       )  
     ];
@@ -70,3 +68,12 @@ const getPayload = (r, a, m) => {
   
   return hasBody(m) ? send : body;
 }
+
+const createSetAction = (type, method, actionObject, response) => ({
+  type,
+  method,
+  payload: getPayload(response, actionObject, method),
+  path: response.request.path,
+  params: response.request.params,
+  statusCode: response.statusCode
+})

@@ -12,17 +12,17 @@ When you define an action object, these are the available properties:
 * [body](#use-the-body-property-as-a-body-creator-for-post)
 * other http properties (headers, accept, user, password, attach..., please check [cyclejs http doc](https://cycle.js.org/api/http.html#api) for more info)
 
-### Url
+### The url property
 
-If there is an url property, then it's a http action, otherwise it's a store action.
+If there is an url property, then it's an http action, otherwise it's a store action.
 
-### Method
+### The method property
 
-The http method (get, post, put, patch, delete...). If method is not defined, it's a get.
+The http method (get, post, put, patch, delete...). The default value is 'get'.
 
-### Methods
+### The methods property
 
-Define more than one method, in a string array, e.g., ['get', 'post'].
+Define more than one method, in a string array, e.g., ['get', 'post']. If both methods and method are defined, the method will be ignored.
 
 #include "docs/generate-actions.md"
 #include "docs/after.md"

@@ -11,9 +11,9 @@ A react/redux library which automates all redux flows including http calls. No m
   * [Usage](#usage)
   * [Define action data](#define-action-data)
     * [Action object properties](#action-object-properties)
-    * [Url](#url)
-    * [Method](#method)
-    * [Methods](#methods)
+    * [The url property](#the-url-property)
+    * [The method property](#the-method-property)
+    * [The methods property](#the-methods-property)
     * [Generate action creators with generateActions](#generate-action-creators-with-generateactions)
     * [Use the after property to specify a different payload](#use-the-after-property-to-specify-a-different-payload)
     * [Define parameters in the url or path property](#define-parameters-in-the-url-or-path-property)
@@ -135,17 +135,17 @@ When you define an action object, these are the available properties:
 * [body](#use-the-body-property-as-a-body-creator-for-post)
 * other http properties (headers, accept, user, password, attach..., please check [cyclejs http doc](https://cycle.js.org/api/http.html#api) for more info)
 
-### Url
+### The url property
 
-If there is an url property, then it's a http action, otherwise it's a store action.
+If there is an url property, then it's an http action, otherwise it's a store action.
 
-### Method
+### The method property
 
-The http method (get, post, put, patch, delete...). If method is not defined, it's a get.
+The http method (get, post, put, patch, delete...). The default value is 'get'.
 
-### Methods
+### The methods property
 
-Define more than one method, in a string array, e.g., ['get', 'post'].
+Define more than one method, in a string array, e.g., ['get', 'post']. If both methods and method are defined, the method will be ignored.
 
 ### Generate action creators with generateActions
 
@@ -163,11 +163,11 @@ For post, put or patch http actions, the body you send to the server will be put
 
 For delete http actions, the object will be removed from the store.
 
-The getArtist/deleteArtist function takes one parameter - 'params', which contains values for the parameters defined in the url or path properties.
+The get/delete function takes one parameter - 'params', which contains values for the parameters defined in the url or path properties.
 
-The postArtist/putArtist/patchArtist function takes two parameters - 'body' and 'params'. 'body' is the object that will be posted to the server.
+The post/put/patch function takes two parameters - 'body' and 'params'. 'body' is the object that will be posted to the server.
 
-The setArtist function takes two parameters - 'payload' and 'params'. 'payload' is the value/object that will be put on the store.
+The set function takes two parameters - 'payload' and 'params'. 'payload' is the value/object that will be put on the store.
 
 ### Use the after property to specify a different payload
 

@@ -14,8 +14,8 @@ For post, put or patch http actions, the body you send to the server will be put
 
 For delete http actions, the object will be removed from the store.
 
-The getArtist/deleteArtist function takes one parameter - 'params', which contains values for the parameters defined in the url or path properties.
+The get/delete function takes one parameter - 'params', which contains values for the parameters defined in the url or path properties.
 
-The postArtist/putArtist/patchArtist function takes two parameters - 'body' and 'params'. 'body' is the object that will be posted to the server.
+The post/put/patch function takes two parameters - 'body' and 'params'. 'body' is the object that will be posted to the server.
 
-The setArtist function takes two parameters - 'payload' and 'params'. 'payload' is the value/object that will be put on the store.
+The set function takes two parameters - 'payload' and 'params'. 'payload' is the value/object that will be put on the store.

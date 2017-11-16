@@ -8,6 +8,11 @@ export const actionData = {
   },
   artist: {
     url: api + 'artists/{id}',
+  },
+  newArtist: {
+    url: api + 'artists',
+    method: 'post',
+    path: 'artists[]'
   }
 }
 

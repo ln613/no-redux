@@ -22,7 +22,7 @@ class Artists extends React.Component {
         
         <div className="main">
           {(this.props.artists || []).map(a => 
-            <div>{a.name}</div>
+            <div>{a.id} - {a.name}</div>
           )}
         </div>
       </div>  

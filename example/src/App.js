@@ -10,6 +10,7 @@ import { api } from './actions';
 
 import Artists from './components/Artists';
 import Artist from './components/Artist';
+import NewArtist from './components/NewArtist';
 
 const src = 'https://github.com/ln613/no-redux/blob/master/example/src/components/';
 
@@ -53,8 +54,11 @@ class App extends Component {
 
         <section>
           <h2>Define action data</h2>
-          <p>You only need to define the data about the actions.</p>
-          <pre className="card"><code className="language-javascript">
+          <p>All you need to do is to define the action data and call the generated action creators.</p>
+          <div className="flex main">
+            <div className="w50">
+              <div className="left">Define action data:</div>
+              <pre className="card c2"><code className="language-javascript">
 {`export const actionData = {
   artists: {
     url: 'http://localhost/api/artists'
@@ -65,16 +69,90 @@ class App extends Component {
   rate: {
     url: 'http://localhost/api/updaterate',
     method: 'post',
-    path: 'artists[id={artistId}].album[id={albumId}].rate'
+    path: 'artists[id={artistId}].albums[id={albumId}].rate'
   },
   //...
-}`}
-          </code></pre>
+}
+//...
+export default generateActions(actionData);`}
+              </code></pre>
+            </div>
+            <div className="w50">
+              <div className="left">Call action creators:</div>
+              <pre className="card c2"><code className="language-javascript">
+{`// call web api and put the http response on the store under 'artists'
+this.props.getArtists();
+
+// set the 'artists' to null on the store
+this.props.setArtists();
+
+// with parameters
+this.props.getArtist({ id: 5 });
+
+// call web api with body and put the body on the store under the path
+this.props.postRate(99, {
+  artistId: 5,
+  albumId: 3
+});`}
+              </code></pre>
+            </div>
+          </div>
         </section>
 
         <section>
-          <h3>Create redux store with the action data</h3>
-          <pre className="card"><code className="language-javascript">
+          <h2>Restful Api</h2>
+          <div className="flex main">
+            <div className="w50">
+              <div className="left">Action data with restful API:</div>
+              <pre className="card c2"><code className="language-javascript">
+{`export const actionData = {
+  artists: {
+    url: 'http://localhost/api/artists',
+    methods: ['get', 'post']
+  },
+  artist: {
+    url: 'http://localhost/api/artist/{id}',
+    methods: ['put', 'patch', 'delete']
+  },
+  //...
+}
+//...
+export default generateActions(actionData);`}
+              </code></pre>
+            </div>
+            <div className="w50">
+              <div className="left">Call action creators:</div>
+              <pre className="card c2"><code className="language-javascript">
+{`this.props.getArtists();
+
+// add new item to array
+this.props.postArtists({ id: 7, name: 'Elton John' });
+
+// replace item in array
+this.props.putArtist(
+  { id: 5, name: 'MJ', albums: [] },
+  { id: 5 }
+);
+
+// modify item in array
+this.props.patchArtist(
+  { name: 'MJ' },
+  { id: 5 }
+);
+
+// remove item from array
+this.props.deleteArtist({ id: 5 });`}
+              </code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Setup redux store</h2>
+          <div className="flex main">
+            <div className="w50">
+              <div className="left">Create store with the action data:</div>
+              <pre className="card c2"><code className="language-javascript">
 {`import React from 'react';
 import { render } from 'react-dom';
 import { Provider, createStore } from 'no-redux';
@@ -87,49 +165,18 @@ render(
   </Provider>,
   document.getElementById('root')
 );`}
-          </code></pre>
-        </section>
-
-        <section>
-          <h2>Generate action creators</h2>
-          <ol>
-            <li>Call <i>generateActions</i> to generate action creators</li>
-            <pre className="card"><code className="language-javascript">
-{`import { generateActions } from 'no-redux';
-//...
-export default generateActions(actionData);`}
-            </code></pre>
-            <li>Map the action creators to the component props</li>
-            <pre className="card"><code className="language-javascript">
+              </code></pre>
+              </div>
+            <div className="w50">
+              <div className="left">Map action creators to props:</div>
+              <pre className="card c2"><code className="language-javascript">
 {`import { connect } from 'no-redux';
 import actions from './actions';
 //...
 export default connect(selector, actions)(App);`}
-            </code></pre>
-          </ol>  
-        </section>
-
-        <section>
-          <h2>Action creators</h2>
-          <ul>
-            <li>One action creator for each http method, e.g., <i>getArtist, postArtist, putArtist, patchArtist and deleteArtist</i>, used to make http calls</li>
-						<li className="fragment fade-up">One <i>set</i> action creator for every action, e.g., <i>setArtist</i>, used to put payload on the store</li>
-					</ul>          
-        </section>
-
-        <section>
-          <h2>Call the http action creators</h2>
-          <pre className="card"><code className="language-javascript">
-{`this.props.getArtists();
-this.props.getArtist({ id: 5 });
-this.props.postRate(99, { artistId: 5, albumId: 3 });`}
-          </code></pre>
-          <p>When you call http action creators, no-redux will:</p>
-          <ul>
-            <li>Make http request</li>
-            <li>Receive http response, call the <i>set</i> action creator with the response</li>
-            <li>Put the payload/response on the store under the action name/path</li>
-          </ul>
+              </code></pre>
+            </div>
+          </div>
         </section>
 
         <section>
@@ -152,7 +199,7 @@ render(
     <Button onClick={() => this.props.setArtists()}>
       Clear Artists
     </Button>
-    ...
+    //...
   </div>
 )`}
             </code></pre>
@@ -182,15 +229,13 @@ render(
 
 render(
   <div>
-    <Button
-      onClick={() => this.props.getArtist({ id: 5 })}
-    >
+    <Button onClick={() => this.props.getArtist({ id: 5 })}>
       Load Artist
     </Button>
     <Button onClick={() => this.props.setArtist()}>
       Clear Artist
     </Button>
-    ...
+    //...
   </div>
 )`}
             </code></pre>
@@ -201,6 +246,82 @@ render(
                 <small><a href={api + 'artists/5'} target="_blank">Check json api</a></small><br/>
                 <small><a href={src + 'Artist.js'} target="_blank">View Source</a></small>
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Example 3</h2>
+          <p>Add new item to an array</p>
+          <div className="flex">
+            <pre className="card w50"><code className="language-javascript">
+{`export const actionData = {
+  //...
+  newArtist: {
+    url: 'http://localhost/api/newartist',
+    method: 'post',
+    path: 'artists[]'
+  }
+}
+
+// in the component...
+
+render(
+  <div>
+    <Button onClick={() => this.props.postNewArtist({
+      id: this.getNewId(),
+      name: this.refs.name.value
+    })}>
+      Add Artist
+    </Button>
+    //...
+  </div>
+)`}
+            </code></pre>
+            <div className="w50">
+              <div className="spacer"/>
+              <NewArtist/>
+              <p>
+                <small><a href={src + 'NewArtist.js'} target="_blank">View Source</a></small>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Example 4</h2>
+          <p>Todo list with restful API</p>
+          <div className="flex main">
+            <div className="w50">
+              <pre className="card c2"><code className="language-javascript">
+{`export const actionData = {
+  //...
+  newArtist: {
+    url: 'http://localhost/api/newartist',
+    method: 'post',
+    path: 'artists[]'
+  }
+}
+
+// in the component...
+
+render(
+  <div>
+    <Button onClick={() => this.props.postNewArtist({
+      id: this.getNewId(),
+      name: this.refs.name.value
+    })}>
+      Add Artist
+    </Button>
+    //...
+  </div>
+)`}
+              </code></pre>
+            </div>
+            <div className="w50">
+              <div className="card c2">
+                <iframe className="todo" src="http://localhost:3000"/>
+              </div>  
             </div>
           </div>
         </section>
