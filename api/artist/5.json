@@ -1,8 +1,0 @@
-{
-  "id": 5,
-  "name": "Michael Jackson",
-  "albums": [
-    { "name": "Off the Wall", "year": 1979 },
-    { "name": "Bad", "year": 1988 }
-  ]
-}
