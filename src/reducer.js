@@ -44,6 +44,13 @@ export default l => {
       if (idx === 0 && isNil(view(lensPath(arr), state)))
         state = set(lensPath(arr), [], state);
     }
+    else if (idx instanceof Error) {
+      state.error = {
+        source: a.type,
+        text: idx.message
+      };
+      return state;
+    }
 
     return set(lensPath(path), a.payload, state);
   };

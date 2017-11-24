@@ -6,14 +6,19 @@ export const actionData = {
   artists: {
     url: api + 'artists'
   },
-  artist: {
+  currentArtist: {
     url: api + 'artists/{id}',
   },
   newArtist: {
     url: api + 'artists',
     method: 'post',
     path: 'artists[]'
-  }
+  },
+  artist: {
+    url: api + 'artists/{id}',
+    methods: ['put', 'patch', 'delete'],
+    path: 'artists[id]'
+  },
 }
 
 export default generateActions(actionData);

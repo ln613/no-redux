@@ -1,23 +1,25 @@
 import React from 'react';
 import { connect } from 'no-redux';
 import actions from '../actions';
+import { selector } from '../selectors';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 class Artist extends React.Component {
   render() {
-    const artist = this.props.artist;
+    const artist = this.props.currentArtist;
     
     return (
       <div>
         <ButtonGroup>
           <Button
             bsStyle="primary"
-            onClick={() => this.props.getArtist({ id: 5 })}>
+            disabled={this.props.isLoading === true}
+            onClick={() => this.props.getCurrentArtist({ id: 5 })}>
             Load Artist
           </Button>
           <Button
             bsStyle="warning"
-            onClick={() => this.props.setArtist()}>
+            onClick={() => this.props.setCurrentArtist()}>
             Clear Artist
           </Button>
         </ButtonGroup>
@@ -33,4 +35,4 @@ class Artist extends React.Component {
   }
 }
 
-export default connect(s => ({ artist: s.artist }), actions)(Artist);
+export default connect(selector, actions)(Artist);

@@ -6,11 +6,13 @@ import 'react-highlight';
 import 'reveal.js/css/reveal.css';
 import 'reveal.js/css/theme/beige.css';
 import 'highlight.js/styles/vs.css';
-import { api } from './actions';
+import actions, { api } from './actions';
+import { connect } from 'no-redux';
 
 import Artists from './components/Artists';
 import Artist from './components/Artist';
 import NewArtist from './components/NewArtist';
+import RemoveArtist from './components/RemoveArtist';
 
 const src = 'https://github.com/ln613/no-redux/blob/master/example/src/components/';
 
@@ -18,13 +20,16 @@ class App extends Component {
   componentDidMount() {
     Reveal.initialize({
       dependencies: [
-        { src: 'reveal.js/lib/js/classList.js', condition: function () { return !document.body.classList; } },
-        { src: 'reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-        { src: 'reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-        { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad();  } },
-        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
-        { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        { src: 'highlight.js/lib/highlight', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
       ]
+    });
+    Reveal.addEventListener('slidechanged', e => {
+      if (e.currentSlide.innerText.slice(0, 7).toLowerCase() === 'example') {
+        if (e.currentSlide.innerText[8] === '1')
+          this.props.setArtists();
+        else
+          this.props.getArtists();
+      }
     });
   }
 
@@ -194,7 +199,10 @@ export default connect(selector, actions)(App);`}
 
 render(
   <div>
-    <Button onClick={() => this.props.getArtists()}>
+    <Button
+      disabled={this.props.isLoading === true}
+      onClick={() => this.props.getArtists()}
+    >
       Load Artists
     </Button>
     <Button onClick={() => this.props.setArtists()}>
@@ -291,6 +299,41 @@ render(
 
         <section>
           <h2>Example 4</h2>
+          <p>Delete item from an array</p>
+          <div className="flex">
+            <pre className="card w50"><code className="language-javascript">
+{`export const actionData = {
+  //...
+  artist: {
+    url: api + 'artist/{id}',
+    methods: ['put', 'patch', 'delete'],
+    path: 'artists[id]'
+  }
+}
+
+// in the component...
+
+render(
+  <div>
+    <Button onClick={() => this.props.deleteArtist({ id: 5 })}>
+      Delete id=5
+    </Button>
+    //...
+  </div>
+)`}
+            </code></pre>
+            <div className="w50">
+              <div className="spacer"/>
+              <RemoveArtist/>
+              <p>
+                <small><a href={src + 'NewArtist.js'} target="_blank">View Source</a></small>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Example 5</h2>
           <p>Todo list with restful API</p>
           <div className="flex main">
             <div className="w50">
@@ -315,7 +358,7 @@ render(
             </div>
             <div className="w50">
               <div className="card c2">
-                <iframe className="todo" src="https://ln613.github.io/no-redux-todo-example"/>
+                <iframe className="todo" src="https://ln613.github.io/no-redux-todo-example" title="todo"/>
               </div>  
             </div>
           </div>
@@ -325,4 +368,4 @@ render(
   }
 }
 
-export default App;
+export default connect(s => ({}), actions)(App);

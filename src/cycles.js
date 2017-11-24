@@ -36,7 +36,7 @@ export default l => unnest(
               {
                 error: {
                   source: type[1],
-                  text: tap(console.log, error.response) && error.response.error && error.response.error.message,
+                  text: error.response && error.response.error && error.response.error.message,
                   status: error.response && error.response.status,
                 }
               }

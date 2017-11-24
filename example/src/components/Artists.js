@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'no-redux';
 import actions from '../actions';
+import { selector } from '../selectors';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 class Artists extends React.Component {
@@ -10,6 +11,7 @@ class Artists extends React.Component {
         <ButtonGroup>
           <Button
             bsStyle="primary"
+            disabled={this.props.isLoading === true}
             onClick={() => this.props.getArtists()}>
             Load Artists
           </Button>
@@ -30,4 +32,4 @@ class Artists extends React.Component {
   }
 }
 
-export default connect(s => ({ artists: s.artists }), actions)(Artists);
+export default connect(selector, actions)(Artists);

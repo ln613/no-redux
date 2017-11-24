@@ -4,47 +4,43 @@ import actions from '../actions';
 import { selector } from '../selectors';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-class NewArtist extends React.Component {
-  getNewId = () =>
-    this.props.artists
-      ? Math.max.apply(null, this.props.artists.map(x => x.id)) + 1
-      : 1;
-  
+class EditArtist extends React.Component {
   render() {
     return (
       <div className="main">
-        <div className="spacer" />
-        <div>
-          <input ref="name" />
-        </div>
-        <div className="spacer" />
-        
         <ButtonGroup>  
           <Button
             bsStyle="primary"
             disabled={this.props.isLoading === true}
-            onClick={() => this.props.postNewArtist({
-              id: this.getNewId(),
-              name: this.refs.name.value
-            })}>
-            Add Artist
+            onClick={() => this.props.deleteArtist({ id: 5 })}
+          >
+            Remove id=5
           </Button>
           <Button
             bsStyle="warning"
             disabled={this.props.isLoading === true}
-            onClick={() => this.props.getArtists()}>
+            onClick={() => {
+              this.props.getArtists();
+              this.props.setError();
+            }}>
             Reset List
           </Button>
-        </ButtonGroup>  
+        </ButtonGroup>
         
         <div>
-          {(this.props.artists || []).map(a => 
+          {(this.props.artists || []).map(a =>
             <div>{a.id} - {a.name}</div>
           )}
         </div>
+        
+        {this.props.error ?
+          <div style={{color: 'red'}}>
+            {this.props.error.text}
+          </div>
+        : null}  
       </div>  
     );
   }
 }
 
-export default connect(selector, actions)(NewArtist);
+export default connect(selector, actions)(EditArtist);

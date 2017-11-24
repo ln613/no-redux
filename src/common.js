@@ -7,7 +7,7 @@ const find = (a, p, v, c) => {
   );
   
   if (idx === -1)
-    throw new Error(`Item not found with '${p}=${v}'`);
+    return new Error(`Item not found with '${p}=${v}'`);
   
   return idx;
 }
@@ -87,7 +87,7 @@ export const parsePath = (path, name, method) => {
         idx = getIndex(arr, prop, params);
       
       if (idx === -1)
-        throw new Error(`Item not found with '${prop}'`);
+        idx = new Error(`Item not found with '${prop}'`);
       
       return [...p, arrName, idx];
     }, [], lens);
