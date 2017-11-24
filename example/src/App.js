@@ -326,7 +326,7 @@ render(
               <div className="spacer"/>
               <RemoveArtist/>
               <p>
-                <small><a href={src + 'NewArtist.js'} target="_blank">View Source</a></small>
+                <small><a href={src + 'RemoveArtist.js'} target="_blank">View Source</a></small>
               </p>
             </div>
           </div>
