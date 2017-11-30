@@ -2,6 +2,21 @@
   "name": "no-redux",
   "version": "0.2.1",
   "description": "A react/redux library which automates all redux flows. No more action creators, reducers, thunks/sagas..., and immutability is guaranteed. Redux becomes invisible to you, hence the name no-redux.",
+  "keywords": [
+    "javascript",
+    "react",
+    "redux",
+    "ramda",
+    "immutable",
+    "redux-cycles",
+    "cyclejs",
+    "http-requests",
+    "reselect"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ln613/no-redux.git"
+  },
   "main": "dist",
   "scripts": {
     "start": "watch \"npm run build\" src",
