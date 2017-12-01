@@ -63,7 +63,7 @@ render(
 
 **Step 3**
 
-In your component, connect to the store with the action creators you created in step 1. When you call the action creator functions, no-redux will generate the actions, make http requests, get the http response and put the results on the redux store.
+In your component, connect to the store with the action creators you created in step 1. When you call the action creator functions, no-redux will make http requests, get the http response and put the results on the redux store.
 
 ```js
 import React from 'react';

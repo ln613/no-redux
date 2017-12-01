@@ -4,12 +4,12 @@
 
 When you define an action object, these are the available properties:
 
-* [url](#url)
-* [method](#method)
-* [methods](#methods)
-* [path](#update-nested-store-object-with-path)
-* [after, afterGet, afterPost, afterPut, afterPatch, afterDelete](#use-the-after-property-to-specify-a-different-payload)
-* [body](#use-the-body-property-as-a-body-creator-for-post)
+* url
+* method
+* methods
+* [path](./path.md)
+* [after, afterGet, afterPost, afterPut, afterPatch, afterDelete](./after.md)
+* [body](./body.md)
 * other http properties (headers, accept, user, password, attach..., please check [cyclejs http doc](https://cycle.js.org/api/http.html#api) for more info)
 
 ### The url property
