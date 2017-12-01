@@ -331,7 +331,6 @@ this.props.setAlbum(null, { id: 5, name: 'Bad' })
 
 As you can see, you can define just one action object to achieve all update/insert/delete functionalities, or you can define an action object for each functionality.
 
-
 ## Use selectors for derived data
 
 Since the store only keeps the minimal raw data, any derived/computed data should be done in the mapStateToProps stage with selectors.

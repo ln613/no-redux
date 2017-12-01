@@ -23,9 +23,3 @@ The http method (get, post, put, patch, delete...). The default value is 'get'.
 ### The methods property
 
 Define more than one method, in a string array, e.g., ['get', 'post']. If both methods and method are defined, the method will be ignored.
-
-#include "docs/generate-actions.md"
-#include "docs/after.md"
-#include "docs/params.md"
-#include "docs/body.md"
-#include "docs/pre-defined.md"
