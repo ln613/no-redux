@@ -1,7 +1,7 @@
 {
   "name": "no-redux",
   "version": "0.2.2",
-  "description": "A react/redux library which automates all redux flows. No more action creators, reducers, thunks/sagas..., and immutability is guaranteed. Redux becomes invisible to you, hence the name no-redux.",
+  "description": "A react/redux library which automates all redux flows including http calls, and store immutability is guaranteed. Redux becomes invisible to you, hence the name no-redux.",
   "keywords": [
     "javascript",
     "react",
