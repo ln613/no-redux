@@ -10,7 +10,7 @@
   * [The "body" creator](./docs/body.md)
   * Pre-defined actions
     * [Handle http errors](./docs/error.md)
-    * [The "isLoading" flag](./docs/error.md)
+    * [The "isLoading" flag](./docs/loading.md)
 * Path
   * [Update store with path](./docs/path.md)
   * [Locate an array element](./docs/array.md)

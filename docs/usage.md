@@ -6,7 +6,7 @@
 
 **Step 1**
 
-Create a declarative action data file.
+Define an action data object, and call "generateActions" to generate action creators.
 
 ```js
 import { generateActions } from 'no-redux';
@@ -22,7 +22,7 @@ export default generateActions(actionData);
 
 **Step 2**
 
-Create a redux store by calling the createStore function from 'no-redux' with the action data object you defined in step 1.
+Create a redux store by calling the "createStore" function from "no-redux" with the action data object you defined in step 1. The "createStore" function will generate reducers and middlewares that handles http calls and register them with the redux store.
 
 ```js
 import React from 'react';
