@@ -1,5 +1,6 @@
 import { fromPairs, reduce, isNil } from 'ramda';
-import { parsePath, toHttpMethods, toSet, replace, attachDefault, hasBody } from './common';
+import { parsePath } from 'ipath';
+import { toHttpMethods, toSet, replace, attachDefault, hasBody } from './common';
 
 const createAction = (t, action) => {
   const type = toSet(t);
@@ -7,7 +8,7 @@ const createAction = (t, action) => {
     type,
     (payload, params) => ({
       type,
-      path: parsePath(action.path, t),
+      path: action.path || t,
       payload: isNil(payload) ? null : payload,
       params
     })
@@ -26,7 +27,7 @@ const createHttpActions = (t, action) => {
     return {
       type: type[1],
       url: replace(action.url, params),
-      path: parsePath(action.path, t, type[0]),
+      path: action.path || t,
       params,
       body: body && (action.body ? action.body(body) : body)
     }

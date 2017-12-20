@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@cycle/http": "^14.7.0",
+    "ipath": "^0.1.0",
     "ramda": "^0.25.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",

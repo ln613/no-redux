@@ -28,11 +28,11 @@ test('getParams', () => {
   expect(getParams('artists[id]')).toEqual([]);
 });
 
-test('parsePath - object path', () => {
-  expect(parsePath(null, 'abc')()).toEqual(['abc']);
-  expect(parsePath('p1.p2')()).toEqual(['p1', 'p2']);
-  expect(parsePath('p1.{p}.p3')({ p: 'p2' })).toEqual(['p1', 'p2', 'p3']);
-});
+// test('parsePath - object path', () => {
+//   expect(parsePath(null, 'abc')()).toEqual(['abc']);
+//   expect(parsePath('p1.p2')()).toEqual(['p1', 'p2']);
+//   expect(parsePath('p1.{p}.p3')({ p: 'p2' })).toEqual(['p1', 'p2', 'p3']);
+// });
 
 const params = {
   f1: 'albums',
@@ -70,22 +70,22 @@ const state = {
 const r = (a, b) => ['artists', a, 'albums', b, 'year'];
 const rr = e => ['artists', 1, 'albums', new Error(`Item not found with 'name=${e}'`), 'year'];
 
-test('parsePath - array path', () => {
-  expect(parsePath('artists[id].{f1}[name].{f2}')(params, state)).toEqual(r(1, 0));
-  expect(parsePath('artists[id].{f1}[{f3}].{f2}')(params, state)).toEqual(r(1, 0));
-  expect(parsePath('artists[id].{f1}[{f4}].{f2}')(params, state)).toEqual(r(1, 1));
-  expect(parsePath('artists[id=3].albums[name=a2].year')(params, state)).toEqual(r(0, 1));
-  expect(parsePath('artists[id].albums[n].year')(params, state)).toEqual(r(1, 2));
-  expect(parsePath('artists[id=5].albums[{f4}={year}].year')(params, state)).toEqual(r(1, 1));
-  expect(parsePath('artists[id={id}].albums[name={name}].year')(params, state)).toEqual(r(1, 0));
-  expect(parsePath('artists[name={artistName}].albums[name={albumName}].year')(params, state)).toEqual(r(1, 1));
-  expect(parsePath('artists[id].albums[name=a5].year')(params, state)).toEqual(rr('a5'));
-  expect(parsePath('artists[id].albums[name={name}1].year')(params, state)).toEqual(rr('a31'));
-  expect(parsePath('artists[id].albums[name={name}{id}].year')(params, state)).toEqual(rr('a35'));
-});
+// test('parsePath - array path', () => {
+//   expect(parsePath('artists[id].{f1}[name].{f2}')(params, state)).toEqual(r(1, 0));
+//   expect(parsePath('artists[id].{f1}[{f3}].{f2}')(params, state)).toEqual(r(1, 0));
+//   expect(parsePath('artists[id].{f1}[{f4}].{f2}')(params, state)).toEqual(r(1, 1));
+//   expect(parsePath('artists[id=3].albums[name=a2].year')(params, state)).toEqual(r(0, 1));
+//   expect(parsePath('artists[id].albums[n].year')(params, state)).toEqual(r(1, 2));
+//   expect(parsePath('artists[id=5].albums[{f4}={year}].year')(params, state)).toEqual(r(1, 1));
+//   expect(parsePath('artists[id={id}].albums[name={name}].year')(params, state)).toEqual(r(1, 0));
+//   expect(parsePath('artists[name={artistName}].albums[name={albumName}].year')(params, state)).toEqual(r(1, 1));
+//   expect(parsePath('artists[id].albums[name=a5].year')(params, state)).toEqual(rr('a5'));
+//   expect(parsePath('artists[id].albums[name={name}1].year')(params, state)).toEqual(rr('a31'));
+//   expect(parsePath('artists[id].albums[name={name}{id}].year')(params, state)).toEqual(rr('a35'));
+// });
   
-test('parsePath - array path - error', () => {
-  expect(() => parsePath('artists[id].{f5}[name].year')(params, state)).toThrow('f5 is not provided');
-  expect(() => parsePath('artists[id].{f3}[name].year')(params, state)).toThrow('name is not an array');
-  expect(() => parsePath('artists[id].albums[name=a5={id}].year')(params, state)).toThrow("Invalid path 'name=a5={id}'");
-});
+// test('parsePath - array path - error', () => {
+//   expect(() => parsePath('artists[id].{f5}[name].year')(params, state)).toThrow('f5 is not provided');
+//   expect(() => parsePath('artists[id].{f3}[name].year')(params, state)).toThrow('name is not an array');
+//   expect(() => parsePath('artists[id].albums[name=a5={id}].year')(params, state)).toThrow("Invalid path 'name=a5={id}'");
+// });

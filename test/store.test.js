@@ -67,7 +67,7 @@ test('call action creators', () => {
   expect(actions.setArtists(artists)).toEqual({
     type: 'setArtists',
     payload: artists,
-    path: expect.any(Function),
+    path: 'artists',
     params: undefined
   });
 });
@@ -98,9 +98,16 @@ const testHttp = (title, action, val, exp) => {
     const unsubscribe = store.subscribe(() => {
       const state = store.getState();
       if (!state.isLoading) {
-        expect(val(state)).toMatchObject(exp);
-        unsubscribe();
-        done();
+        try {
+          expect(val(state)).toMatchObject(exp);
+          done();
+        }
+        catch (e) {
+          done(e);
+        }
+        finally {
+          unsubscribe();          
+        }
       }  
     });
   
