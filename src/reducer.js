@@ -1,6 +1,6 @@
-import { last, is, unnest } from 'ramda';
+import { last, is, unnest, takeLast, dropLast } from 'ramda';
 import { update } from 'ipath';
-import { toHttpMethods, toSet, attachDefault } from './common';
+import { toHttpMethods, toSet, attachDefault, tap } from './common';
 
 export default l => {
   l = attachDefault(l);
@@ -20,15 +20,20 @@ export default l => {
     
     let path = a.path;
 
-    if (path.length > 0 && is(String, last(path)) && a.method === 'post' && a.statusCode === 201) // restful post to array
-      path += '[]';
+    if (path.length > 0 && a.method === 'post') { // restful post to array
+      if (takeLast(4, path) === '[id]')
+        path = dropLast(4, path) + '[]';
+      else if (takeLast(2, path) !== '[]')
+        path += '[]';
+    }
 
     let state = Object.assign({}, s, {
       isLoading: false,
+      lastAction: a.type,
       error: a.error
     });
 
-    return update(state, path, a.payload, a.params, a.method === 'patch');
+    return update(state, tap(path), a.payload, a.params || a.payload, a.method === 'patch');
 
     // const idx = last(path);
     // if (is(Number, idx)) {

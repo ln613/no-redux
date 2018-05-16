@@ -1,4 +1,4 @@
-import { last, reduce, is, isNil, all, view, lensPath, unnest, merge, toLower, contains } from 'ramda';
+import { last, reduce, is, isNil, all, view, lensPath, unnest, merge, toLower, contains, tap as _tap } from 'ramda';
 
 const find = (a, p, v, c) => {
   const idx = a.findIndex(x => is(Object, x)
@@ -147,3 +147,5 @@ export const isRestfulPost = (method, statusCode) =>
 
 export const hasBody = method =>
   contains(method, ['post', 'put', 'patch']);
+
+export const tap = x => _tap(console.log, isNil(x) ? 'null' : x);

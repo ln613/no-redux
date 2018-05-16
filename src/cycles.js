@@ -1,6 +1,6 @@
 import xs from 'xstream';
-import { unnest, omit, tap } from 'ramda';
-import { ofType, toHttpMethods, toSet, upper, hasBody } from './common';
+import { unnest, omit } from 'ramda';
+import { ofType, toHttpMethods, toSet, upper, hasBody, tap } from './common';
 
 export default l => unnest(
   Object.keys(l).map(x => {
@@ -65,6 +65,9 @@ const getPayload = (r, a, m) => {
   
   if (m === 'delete')
     return null;
+
+  if (m === 'post' && send && !send.id && body && body.id)
+    return Object.assign({}, send, { id: body.id });
   
   return hasBody(m) ? send : body;
 }
