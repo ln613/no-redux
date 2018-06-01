@@ -21,10 +21,8 @@ export default l => {
     let path = a.path;
 
     if (path.length > 0 && a.method === 'post') { // restful post to array
-      if (takeLast(4, path) === '[id]')
-        path = dropLast(4, path) + '[]';
-      else if (takeLast(2, path) !== '[]')
-        path += '[]';
+      if (last(path) === ']' && takeLast(2, path) !== '[]')
+        path = path.slice(0, path.lastIndexOf('[')) + '[]';
     }
 
     let state = Object.assign({}, s, {
@@ -33,7 +31,7 @@ export default l => {
       error: a.error
     });
 
-    return update(state, tap(path), a.payload, a.params || a.payload, a.method === 'patch');
+    return update(state, path, a.payload, a.params || a.payload, a.method === 'patch');
 
     // const idx = last(path);
     // if (is(Number, idx)) {
